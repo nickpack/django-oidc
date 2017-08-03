@@ -43,7 +43,7 @@ def openid(request, op_name=None):
         "next"] if "next" in request.GET.keys() else "/"
     try:
         dyn = settings.OIDC_ALLOW_DYNAMIC_OP or False
-    except:
+    except BaseException:
         dyn = True
 
     try:
@@ -90,8 +90,11 @@ def openid(request, op_name=None):
 
     # Otherwise just render the list+form.
     return render_to_response(template_name,
-                              {"op_list": [i for i in settings.OIDC_PROVIDERS.keys() if i], 'dynamic': dyn,
-                               'form': form, 'ilform': ilform, "next": request.session["next"]})
+                              {"op_list": [i for i in settings.OIDC_PROVIDERS.keys() if i],
+                               'dynamic': dyn,
+                               'form': form,
+                               'ilform': ilform,
+                               "next": request.session["next"]})
 
 
 # Step 4: analyze the token returned by the OP
@@ -146,8 +149,8 @@ def logout(request, next_page=None):
         logger.info("OIDC client {} not found".format(request.session["op"]))
 
     extra_args = {}
-    if client is not None and "post_logout_redirect_uris" in client.registration_response.keys() and len(
-            client.registration_response["post_logout_redirect_uris"]) > 0:
+    if client is not None and "post_logout_redirect_uris" in client.registration_response.keys(
+    ) and len(client.registration_response["post_logout_redirect_uris"]) > 0:
         if next_page is not None:
             # First attempt a direct redirection from OP to next_page
             next_page_url = resolve_url(next_page)

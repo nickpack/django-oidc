@@ -2,7 +2,6 @@
 import os
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -16,13 +15,16 @@ BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(BASE_DIR, r'db.sqlite'),  # Or path to database file if using sqlite3.
+        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',
+        # Or path to database file if using sqlite3.
+        'NAME': os.path.join(BASE_DIR, r'db.sqlite'),
     }
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/{{ docs_version }}/ref/settings/#allowed-hosts
+# See https://docs.djangoproject.com/en/{{ docs_version
+# }}/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
 
 # Local time zone for this installation. Choices can be found here:
@@ -89,12 +91,6 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '9uqo5d00h-l0a45!a6fq*e$y+lxw3&^34-#%18z4ci5^s1t3=o'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -121,9 +117,22 @@ LOGIN_URL = 'openid'
 
 ROOT_URLCONF = 'django_rp.urls'
 
-TEMPLATE_DIRS = (
-    # os.path.join(BASE_DIR, "django_rp/templates"),
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, "templates"),
+                 os.path.normpath(os.path.join(BASE_DIR, "../djangooidc/templates")), ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+
+            ],
+        },
+    }, ]
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -209,13 +218,15 @@ OIDC_DYNAMIC_CLIENT_REGISTRATION_DATA = {
     "post_logout_redirect_uris": ["http://localhost:8000/", ]
 }
 
-# Default is using the 'code' workflow, which requires direct connectivity from website to the OP.
+# Default is using the 'code' workflow, which requires direct connectivity
+# from website to the OP.
 OIDC_DEFAULT_BEHAVIOUR = {
     "response_type": "code",
     "scope": ["openid", "profile", "email", "address", "phone"],
 }
 
-# The keys in this dictionary are the OPs (OpenID Providers) short user friendly name not the issuer (iss) name.
+# The keys in this dictionary are the OPs (OpenID Providers) short user
+# friendly name not the issuer (iss) name.
 OIDC_PROVIDERS = {
     # Test OP - webfinger supported on non-standard URL, no client self registration.
     # "Azure Active Directory": {
