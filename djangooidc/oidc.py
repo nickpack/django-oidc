@@ -108,8 +108,7 @@ class Client(oic.Client):
                     "code": authresp["code"],
                     "redirect_uri": self.registration_response["redirect_uris"][0],
                     "client_id": self.client_id,
-                    "client_secret": self.client_secret
-                }
+                    "client_secret": self.client_secret}
 
                 atresp = self.do_access_token_request(
                     scope="openid", state=authresp["state"], request_args=args,
@@ -126,7 +125,7 @@ class Client(oic.Client):
             session['access_token'] = atresp['access_token']
             try:
                 session['refresh_token'] = atresp['refresh_token']
-            except:
+            except BaseException:
                 pass
 
         try:
@@ -140,9 +139,8 @@ class Client(oic.Client):
 
             logger.debug("UserInfo: %s" % inforesp)
         except MissingEndpoint as e:
-            logging.warning("Wrong OIDC provider implementation or configuration: {}; using token as userinfo source".format(
-                e
-            ))
+            logging.warning(
+                "Wrong OIDC provider implementation or configuration: {}; using token as userinfo source".format(e))
             userinfo = session.get('id_token', {})
 
         return userinfo
@@ -209,11 +207,14 @@ class OIDCClients(object):
 
         try:
             verify_ssl = default_ssl_check
-        except:
+        except BaseException:
             verify_ssl = True
 
-        client = self.client_cls(client_authn_method=CLIENT_AUTHN_METHOD,
-                                 behaviour=kwargs["behaviour"], verify_ssl=verify_ssl, **args)
+        client = self.client_cls(
+            client_authn_method=CLIENT_AUTHN_METHOD,
+            behaviour=kwargs["behaviour"],
+            verify_ssl=verify_ssl,
+            **args)
 
         # The behaviour parameter is not significant for the election process
         _key_set.discard("behaviour")
@@ -269,8 +270,7 @@ class OIDCClients(object):
             except Exception as e:
                 logger.error(
                     "Provider info discovery failed for %s - assume backend unworkable",
-                    kwargs["srv_discovery_url"]
-                )
+                    kwargs["srv_discovery_url"])
                 logger.exception(e)
         else:
             raise Exception("Configuration error ?")
@@ -280,7 +280,7 @@ class OIDCClients(object):
     def dynamic_client(self, userid):
         try:
             dyn = settings.OIDC_ALLOW_DYNAMIC_OP or False
-        except:
+        except BaseException:
             dyn = True
         if not dyn:
             raise KeyError("No dynamic clients allowed")

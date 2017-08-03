@@ -21,10 +21,13 @@ import sys
 # setting points here.
 from django.core.wsgi import get_wsgi_application
 
-mage_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), os.path.pardir)
+mage_path = os.path.join(
+    os.path.abspath(
+        os.path.dirname(__file__)),
+    os.path.pardir)
 if mage_path not in sys.path:
     sys.path.append(mage_path)
-    #sys.path.append(os.path.join(pydici_path,"pydici"))
+    # sys.path.append(os.path.join(pydici_path,"pydici"))
 
 
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
